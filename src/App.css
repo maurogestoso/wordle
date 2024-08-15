@@ -21,3 +21,12 @@
 .Tile.bg-gray {
   background-color: lightgray;
 }
+
+ol {
+  margin-top: 30px;
+}
+
+ol > li {
+  line-height: 32px;
+  margin-bottom: 16px;
+}

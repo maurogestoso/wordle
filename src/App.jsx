@@ -1,35 +1,51 @@
 import React from "react";
 import "./App.css";
 
+const words = [
+  "apple",
+  "grape",
+  "mango",
+  "peach",
+  "berry",
+  "lemon",
+  "melon",
+  "plums",
+  "pearl",
+  "beach",
+];
+
+const targetWord = words.at(Math.floor(Math.random() * words.length));
+
 function App() {
-  const targetWord = "apple";
   const [{ guesses, currentGuessIndex }, dispatch] = React.useReducer(
     guessesReducer,
     {
       currentGuessIndex: 0,
-      guesses: [""],
+      guesses: ["", "", "", "", "", ""],
     }
   );
   useKeyEventListener(dispatch);
 
+  handleWin(targetWord, guesses, currentGuessIndex);
+  handleLose(targetWord, guesses, currentGuessIndex);
+
   return (
-    <>
-      <div>
-        <h1>Wordle</h1>
-        <h2>Guesses:</h2>
-        <ol>
-          {guesses.map((guess, i) => (
-            <li key={i}>
-              <WordTiles
-                word={guess}
-                targetWord={targetWord}
-                isGuessed={i !== currentGuessIndex}
-              />
-            </li>
-          ))}
-        </ol>
-      </div>
-    </>
+    <main>
+      <h1>Wordle</h1>
+      <p>Target word: {targetWord}</p>
+      <h2>Guesses:</h2>
+      <ol>
+        {guesses.map((guess, i) => (
+          <li key={i}>
+            <WordTiles
+              word={guess}
+              targetWord={targetWord}
+              isGuessed={i !== currentGuessIndex}
+            />
+          </li>
+        ))}
+      </ol>
+    </main>
   );
 }
 
@@ -75,12 +91,9 @@ function guessesReducer(state, action) {
       return { ...state, guesses: newGuesses };
     case "GUESS_WORD":
       if (currentGuess.length !== 5) return state;
-      newGuesses = state.guesses.slice();
-      newGuesses.push("");
       return {
         ...state,
         currentGuessIndex: state.currentGuessIndex + 1,
-        guesses: newGuesses,
       };
   }
   return state;
@@ -88,12 +101,38 @@ function guessesReducer(state, action) {
 
 function useKeyEventListener(dispatch) {
   React.useEffect(() => {
-    document.addEventListener("keyup", (event) => {
+    const listener = (event) => {
       console.log("🚀 ~ document.addEventListener ~ event.key:", event.key);
       if (event.key === "Backspace") return dispatch({ type: "BACKSPACE" });
       if (event.key === "Enter") return dispatch({ type: "GUESS_WORD" });
       if (/^[a-zA-Z]$/.test(event.key))
         return dispatch({ type: "TYPE_LETTER", payload: event.key });
-    });
+    };
+    document.addEventListener("keyup", listener);
+
+    return () => {
+      document.removeEventListener("keyup", listener);
+    };
   }, []);
+}
+
+function handleWin(targetWord, guesses, currentGuessIndex) {
+  const lastGuess = guesses[currentGuessIndex - 1];
+  if (targetWord === lastGuess) {
+    setTimeout(() => {
+      alert("You've won!");
+      location.reload();
+    }, 500);
+  }
+}
+
+function handleLose(targetWord, guesses, currentGuessIndex) {
+  if (currentGuessIndex < 6) return;
+  const lastGuess = guesses[currentGuessIndex - 1];
+  if (targetWord !== lastGuess) {
+    setTimeout(() => {
+      alert("You've lost!");
+      location.reload();
+    }, 500);
+  }
 }
