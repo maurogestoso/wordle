@@ -2,13 +2,13 @@ import React from "react";
 import "./App.css";
 
 function App({ targetWord }) {
-  const [{ guesses, currentGuessIndex }, dispatch] = React.useReducer(
-    guessesReducer,
-    {
+  const [{ guesses, currentGuessIndex, guessedLettersStatus }, dispatch] =
+    React.useReducer(guessesReducer, {
       currentGuessIndex: 0,
       guesses: ["", "", "", "", "", ""],
-    }
-  );
+      guessedLettersStatus: {},
+      targetWord,
+    });
   useKeyEventListener(dispatch);
 
   handleWin(targetWord, guesses, currentGuessIndex);
@@ -23,12 +23,18 @@ function App({ targetWord }) {
           <li key={i}>
             <WordTiles
               word={guess}
-              targetWord={targetWord}
               isGuessed={i < currentGuessIndex}
+              targetWord={targetWord}
             />
           </li>
         ))}
       </ol>
+      <Keyboard
+        guessedLettersStatus={guessedLettersStatus}
+        typeLetter={(letter) =>
+          dispatch({ type: "TYPE_LETTER", payload: letter })
+        }
+      />
     </main>
   );
 }
@@ -41,7 +47,6 @@ function WordTiles({ word, isGuessed, targetWord }) {
     if (targetWord.includes(letter)) return "yellow";
     else return "gray";
   }
-
   return (
     <div className="WordTiles">
       {Array(5)
@@ -61,8 +66,36 @@ function WordTiles({ word, isGuessed, targetWord }) {
   );
 }
 
+function Keyboard({ guessedLettersStatus, typeLetter }) {
+  const keyRows = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
+  return (
+    <div id="Keyboard">
+      {keyRows.map((row) => (
+        <div key={row} className="row">
+          {row.split("").map((letter) => (
+            <button
+              key={letter}
+              className={
+                guessedLettersStatus[letter]
+                  ? `bg-${guessedLettersStatus[letter]}`
+                  : "bg-white"
+              }
+              onClick={() => {
+                typeLetter(letter);
+              }}
+            >
+              {letter}
+            </button>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function guessesReducer(state, action) {
   let newGuesses;
+  let newGuessedLettersStatus;
   const currentGuess = state.guesses[state.currentGuessIndex];
   switch (action.type) {
     case "TYPE_LETTER":
@@ -77,9 +110,18 @@ function guessesReducer(state, action) {
       return { ...state, guesses: newGuesses };
     case "GUESS_WORD":
       if (currentGuess.length !== 5) return state;
+      const { targetWord } = state;
+      newGuessedLettersStatus = { ...state.guessedLettersStatus };
+      currentGuess.split("").forEach((letter, i) => {
+        if (targetWord[i] === letter) newGuessedLettersStatus[letter] = "green";
+        else if (targetWord.includes(letter))
+          newGuessedLettersStatus[letter] = "yellow";
+        else newGuessedLettersStatus[letter] = "gray";
+      });
       return {
         ...state,
         currentGuessIndex: state.currentGuessIndex + 1,
+        guessedLettersStatus: newGuessedLettersStatus,
       };
   }
   return state;
@@ -88,7 +130,6 @@ function guessesReducer(state, action) {
 function useKeyEventListener(dispatch) {
   React.useEffect(() => {
     const listener = (event) => {
-      console.log("🚀 ~ document.addEventListener ~ event.key:", event.key);
       if (event.key === "Backspace") return dispatch({ type: "BACKSPACE" });
       if (event.key === "Enter") return dispatch({ type: "GUESS_WORD" });
       if (/^[a-zA-Z]$/.test(event.key))

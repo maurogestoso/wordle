@@ -11,15 +11,19 @@
   text-align: center;
 }
 
-.Tile.bg-green {
+.bg-green {
   background-color: greenyellow;
 }
-.Tile.bg-yellow {
+.bg-yellow {
   background-color: yellow;
 }
 
-.Tile.bg-gray {
+.bg-gray {
   background-color: lightgray;
+}
+
+.bg-white {
+  background-color: white;
 }
 
 ol {
@@ -30,4 +34,17 @@ ol {
 ol > li {
   line-height: 32px;
   margin-bottom: 16px;
+}
+
+#Keyboard .row:nth-child(2) {
+  margin-left: 15px;
+}
+
+#Keyboard .row:nth-child(3) {
+  margin-left: 30px;
+}
+
+#Keyboard button {
+  width: 30px;
+  height: 30px;
 }
