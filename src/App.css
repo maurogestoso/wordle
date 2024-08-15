@@ -1,0 +1,23 @@
+.WordTiles {
+  display: flex;
+  gap: 4px;
+}
+
+.Tile {
+  width: 30px;
+  height: 30px;
+  border: 1px solid gray;
+  align-content: center;
+  text-align: center;
+}
+
+.Tile.bg-green {
+  background-color: greenyellow;
+}
+.Tile.bg-yellow {
+  background-color: yellow;
+}
+
+.Tile.bg-gray {
+  background-color: lightgray;
+}
