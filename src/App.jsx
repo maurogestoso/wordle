@@ -1,22 +1,7 @@
 import React from "react";
 import "./App.css";
 
-const words = [
-  "apple",
-  "grape",
-  "mango",
-  "peach",
-  "berry",
-  "lemon",
-  "melon",
-  "plums",
-  "pearl",
-  "beach",
-];
-
-const targetWord = words.at(Math.floor(Math.random() * words.length));
-
-function App() {
+function App({ targetWord }) {
   const [{ guesses, currentGuessIndex }, dispatch] = React.useReducer(
     guessesReducer,
     {
@@ -28,7 +13,6 @@ function App() {
 
   handleWin(targetWord, guesses, currentGuessIndex);
   handleLose(targetWord, guesses, currentGuessIndex);
-
   return (
     <main>
       <h1>Wordle</h1>
@@ -40,7 +24,7 @@ function App() {
             <WordTiles
               word={guess}
               targetWord={targetWord}
-              isGuessed={i !== currentGuessIndex}
+              isGuessed={i < currentGuessIndex}
             />
           </li>
         ))}
@@ -60,17 +44,19 @@ function WordTiles({ word, isGuessed, targetWord }) {
 
   return (
     <div className="WordTiles">
-      {word.split("").map((letter, i) => (
-        <div
-          key={i}
-          className={[
-            "Tile",
-            isGuessed && `bg-${getGuessColor(targetWord, letter, i)}`,
-          ].join(" ")}
-        >
-          {letter}
-        </div>
-      ))}
+      {Array(5)
+        .fill("")
+        .map((_, i) => (
+          <div
+            key={i}
+            className={[
+              "Tile",
+              isGuessed && `bg-${getGuessColor(targetWord, word[i], i)}`,
+            ].join(" ")}
+          >
+            {word[i]}
+          </div>
+        ))}
     </div>
   );
 }

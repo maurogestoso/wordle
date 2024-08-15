@@ -24,6 +24,7 @@
 
 ol {
   margin-top: 30px;
+  list-style: none;
 }
 
 ol > li {
