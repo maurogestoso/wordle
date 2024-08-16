@@ -25,7 +25,7 @@ function App({ targetWord }) {
       </header>
       <div id="guesses">
         {guesses.map((guess, i) => (
-          <WordTiles
+          <GuessTiles
             key={i}
             word={guess}
             isGuessed={i < currentGuessIndex}
@@ -43,21 +43,21 @@ function App({ targetWord }) {
 
 export default App;
 
-function WordTiles({ word, isGuessed, targetWord }) {
+function GuessTiles({ word, isGuessed, targetWord }) {
   function getGuessColor(targetWord, letter, index) {
     if (targetWord[index] === letter) return "green";
     if (targetWord.includes(letter)) return "yellow";
     else return "gray";
   }
   return (
-    <div className="WordTiles">
+    <div className="guess-tiles">
       {Array(5)
         .fill("")
         .map((_, i) => (
           <div
             key={i}
             className={[
-              "Tile",
+              "tile",
               isGuessed && `bg-${getGuessColor(targetWord, word[i], i)}`,
             ].join(" ")}
           >
@@ -77,11 +77,12 @@ function Keyboard({ guessedLettersStatus, typeLetter }) {
           {row.split("").map((letter) => (
             <button
               key={letter}
-              className={
+              className={[
+                "letter-key",
                 guessedLettersStatus[letter]
                   ? `bg-${guessedLettersStatus[letter]}`
-                  : "bg-white"
-              }
+                  : "bg-lightgray",
+              ].join(" ")}
               onClick={() => {
                 typeLetter(letter);
               }}

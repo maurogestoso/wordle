@@ -1,3 +1,14 @@
+:root {
+  --color-present: #c9b458;
+  --color-correct: #6aaa64;
+  --color-absent: #787c7e;
+  --bg-color-key: #d3d6da;
+}
+
+body {
+  font-family: sans-serif;
+}
+
 #board {
   margin: 0 auto;
   width: 600px;
@@ -11,6 +22,8 @@
 header {
   width: 100%;
   border-bottom: 2px solid black;
+  text-align: center;
+  padding: 8px 0;
 }
 
 #guesses {
@@ -19,57 +32,72 @@ header {
   gap: 5px;
 }
 
-.WordTiles {
+.guess-tiles {
   display: flex;
   gap: 5px;
 }
 
-.Tile {
+.tile {
   width: 52px;
   height: 52px;
   border: 1px solid gray;
   align-content: center;
   text-align: center;
   text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.5rem;
 }
 
 .bg-green {
-  background-color: greenyellow;
+  background-color: var(--color-correct);
+  color: white;
 }
 .bg-yellow {
-  background-color: yellow;
+  background-color: var(--color-present);
+  color: white;
 }
 
 .bg-gray {
-  background-color: lightgray;
+  background-color: var(--color-absent);
+  color: white;
 }
 
 .bg-white {
   background-color: white;
 }
 
+.bg-lightgray {
+  background-color: #d3d6da;
+}
+
 #Keyboard {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 8px;
 }
 
 #Keyboard .row {
   display: flex;
-  gap: 2px;
+  gap: 6px;
 }
 
 #Keyboard .row:nth-child(2) {
-  margin-left: 15px;
+  margin-left: 21px;
 }
 
 #Keyboard .row:nth-child(3) {
-  margin-left: 30px;
+  margin-left: 42px;
 }
 
-#Keyboard button {
-  width: 30px;
-  height: 30px;
+#Keyboard button.letter-key {
+  width: 43px;
+  height: 58px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.25em;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
 }
 
 h1,
