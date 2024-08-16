@@ -48,32 +48,29 @@ header {
   font-size: 1.5rem;
 }
 
-.bg-green {
-  background-color: var(--color-correct);
-  color: white;
+.bg-correct {
+  background-color: var(--color-correct) !important;
+  color: white !important;
 }
-.bg-yellow {
-  background-color: var(--color-present);
-  color: white;
+.bg-present {
+  background-color: var(--color-present) !important;
+  color: white !important;
 }
 
-.bg-gray {
-  background-color: var(--color-absent);
-  color: white;
+.bg-absent {
+  background-color: var(--color-absent) !important;
+  color: white !important;
 }
 
 .bg-white {
   background-color: white;
 }
 
-.bg-lightgray {
-  background-color: #d3d6da;
-}
-
 #Keyboard {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  align-items: center;
 }
 
 #Keyboard .row {
@@ -81,23 +78,24 @@ header {
   gap: 6px;
 }
 
-#Keyboard .row:nth-child(2) {
-  margin-left: 21px;
-}
-
-#Keyboard .row:nth-child(3) {
-  margin-left: 42px;
-}
-
-#Keyboard button.letter-key {
-  width: 43px;
+#Keyboard button.key {
   height: 58px;
   text-transform: uppercase;
   font-weight: bold;
-  font-size: 1.25em;
   cursor: pointer;
   border: none;
   border-radius: 5px;
+  background-color: var(--bg-color-key);
+}
+#Keyboard button.letter-key {
+  width: 43px;
+  font-size: 1.25em;
+}
+
+#Keyboard button.action-key {
+  width: 65px;
+  font-size: 0.8em;
+  background-color: var(--bg-color-key);
 }
 
 h1,

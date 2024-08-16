@@ -40,10 +40,11 @@ export function reducer(state, action) {
       const { targetWord } = state;
       newGuessedLettersStatus = { ...state.guessedLettersStatus };
       currentGuess.split("").forEach((letter, i) => {
-        if (targetWord[i] === letter) newGuessedLettersStatus[letter] = "green";
+        if (targetWord[i] === letter)
+          newGuessedLettersStatus[letter] = "correct";
         else if (targetWord.includes(letter))
-          newGuessedLettersStatus[letter] = "yellow";
-        else newGuessedLettersStatus[letter] = "gray";
+          newGuessedLettersStatus[letter] = "present";
+        else newGuessedLettersStatus[letter] = "absent";
       });
       return {
         ...state,

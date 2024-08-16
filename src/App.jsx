@@ -1,4 +1,5 @@
 import React from "react";
+import Keyboard from "./Keyboard";
 import useGuessesReducer from "./hooks/useGuessesReducer";
 import useKeyEventListener from "./hooks/useKeyEventListener";
 import "./App.css";
@@ -33,10 +34,7 @@ function App({ targetWord }) {
           />
         ))}
       </div>
-      <Keyboard
-        guessedLettersStatus={guessedLettersStatus}
-        typeLetter={actions.typeLetter}
-      />
+      <Keyboard guessedLettersStatus={guessedLettersStatus} {...actions} />
     </main>
   );
 }
@@ -44,10 +42,10 @@ function App({ targetWord }) {
 export default App;
 
 function GuessTiles({ word, isGuessed, targetWord }) {
-  function getGuessColor(targetWord, letter, index) {
-    if (targetWord[index] === letter) return "green";
-    if (targetWord.includes(letter)) return "yellow";
-    else return "gray";
+  function getGuessStatus(targetWord, letter, index) {
+    if (targetWord[index] === letter) return "correct";
+    if (targetWord.includes(letter)) return "present";
+    else return "absent";
   }
   return (
     <div className="guess-tiles">
@@ -58,40 +56,12 @@ function GuessTiles({ word, isGuessed, targetWord }) {
             key={i}
             className={[
               "tile",
-              isGuessed && `bg-${getGuessColor(targetWord, word[i], i)}`,
+              isGuessed && `bg-${getGuessStatus(targetWord, word[i], i)}`,
             ].join(" ")}
           >
             {word[i]}
           </div>
         ))}
-    </div>
-  );
-}
-
-function Keyboard({ guessedLettersStatus, typeLetter }) {
-  const keyRows = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
-  return (
-    <div id="Keyboard">
-      {keyRows.map((row) => (
-        <div key={row} className="row">
-          {row.split("").map((letter) => (
-            <button
-              key={letter}
-              className={[
-                "letter-key",
-                guessedLettersStatus[letter]
-                  ? `bg-${guessedLettersStatus[letter]}`
-                  : "bg-lightgray",
-              ].join(" ")}
-              onClick={() => {
-                typeLetter(letter);
-              }}
-            >
-              {letter}
-            </button>
-          ))}
-        </div>
-      ))}
     </div>
   );
 }
