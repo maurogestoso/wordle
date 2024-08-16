@@ -1,0 +1,88 @@
+:root {
+  --color-present: #c9b458;
+  --color-correct: #6aaa64;
+  --color-absent: #787c7e;
+}
+
+.guess-tiles {
+  display: flex;
+  gap: 5px;
+}
+
+.tile {
+  width: 52px;
+  height: 52px;
+  border: 1px solid gray;
+  align-content: center;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.tile:nth-child(2) {
+  animation-delay: 100ms;
+}
+.tile:nth-child(3) {
+  animation-delay: 200ms;
+}
+.tile:nth-child(4) {
+  animation-delay: 300ms;
+}
+.tile:nth-child(5) {
+  animation-delay: 400ms;
+}
+
+.flip-tile-present {
+  animation: flip-tile-present 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955)
+    forwards;
+}
+@keyframes flip-tile-present {
+  0% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0);
+  }
+  100% {
+    transform: scaleY(1);
+    background-color: var(--color-present);
+    color: white;
+  }
+}
+
+.flip-tile-correct {
+  animation: flip-tile-correct 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955)
+    forwards;
+}
+@keyframes flip-tile-correct {
+  0% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0);
+  }
+  100% {
+    transform: scaleY(1);
+    background-color: var(--color-correct);
+    color: white;
+  }
+}
+
+.flip-tile-absent {
+  animation: flip-tile-absent 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955)
+    forwards;
+}
+@keyframes flip-tile-absent {
+  0% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0);
+  }
+  100% {
+    transform: scaleY(1);
+    background-color: var(--color-absent);
+    color: white;
+  }
+}

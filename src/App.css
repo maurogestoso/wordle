@@ -32,22 +32,6 @@ header {
   gap: 5px;
 }
 
-.guess-tiles {
-  display: flex;
-  gap: 5px;
-}
-
-.tile {
-  width: 52px;
-  height: 52px;
-  border: 1px solid gray;
-  align-content: center;
-  text-align: center;
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: 1.5rem;
-}
-
 .bg-correct {
   background-color: var(--color-correct) !important;
   color: white !important;

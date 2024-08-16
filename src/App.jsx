@@ -1,10 +1,11 @@
 import React from "react";
 import Keyboard from "./Keyboard";
+import GuessTiles from "./GuessTiles";
 import useGuessesReducer from "./hooks/useGuessesReducer";
 import useKeyEventListener from "./hooks/useKeyEventListener";
 import "./App.css";
 
-function App({ targetWord }) {
+export default function App({ targetWord }) {
   const {
     state: { guesses, currentGuessIndex, guessedLettersStatus },
     actions,
@@ -29,40 +30,13 @@ function App({ targetWord }) {
           <GuessTiles
             key={i}
             word={guess}
-            isGuessed={i < currentGuessIndex}
             targetWord={targetWord}
+            isGuessed={i < currentGuessIndex}
           />
         ))}
       </div>
       <Keyboard guessedLettersStatus={guessedLettersStatus} {...actions} />
     </main>
-  );
-}
-
-export default App;
-
-function GuessTiles({ word, isGuessed, targetWord }) {
-  function getGuessStatus(targetWord, letter, index) {
-    if (targetWord[index] === letter) return "correct";
-    if (targetWord.includes(letter)) return "present";
-    else return "absent";
-  }
-  return (
-    <div className="guess-tiles">
-      {Array(5)
-        .fill("")
-        .map((_, i) => (
-          <div
-            key={i}
-            className={[
-              "tile",
-              isGuessed && `bg-${getGuessStatus(targetWord, word[i], i)}`,
-            ].join(" ")}
-          >
-            {word[i]}
-          </div>
-        ))}
-    </div>
   );
 }
 
@@ -72,7 +46,7 @@ function handleWin(targetWord, guesses, currentGuessIndex) {
     setTimeout(() => {
       alert("You've won!");
       location.reload();
-    }, 500);
+    }, 1500);
   }
 }
 
