@@ -19,21 +19,20 @@ function App({ targetWord }) {
   handleLose(targetWord, guesses, currentGuessIndex);
 
   return (
-    <main>
-      <h1>Wordle</h1>
-      <p>Target word: {targetWord}</p>
-      <h2>Guesses:</h2>
-      <ol>
+    <main id="board">
+      <header>
+        <h1>Wordle</h1>
+      </header>
+      <div id="guesses">
         {guesses.map((guess, i) => (
-          <li key={i}>
-            <WordTiles
-              word={guess}
-              isGuessed={i < currentGuessIndex}
-              targetWord={targetWord}
-            />
-          </li>
+          <WordTiles
+            key={i}
+            word={guess}
+            isGuessed={i < currentGuessIndex}
+            targetWord={targetWord}
+          />
         ))}
-      </ol>
+      </div>
       <Keyboard
         guessedLettersStatus={guessedLettersStatus}
         typeLetter={actions.typeLetter}

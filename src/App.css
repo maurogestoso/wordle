@@ -1,14 +1,36 @@
+#board {
+  margin: 0 auto;
+  width: 600px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+}
+
+header {
+  width: 100%;
+  border-bottom: 2px solid black;
+}
+
+#guesses {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 .WordTiles {
   display: flex;
-  gap: 4px;
+  gap: 5px;
 }
 
 .Tile {
-  width: 30px;
-  height: 30px;
+  width: 52px;
+  height: 52px;
   border: 1px solid gray;
   align-content: center;
   text-align: center;
+  text-transform: uppercase;
 }
 
 .bg-green {
@@ -26,14 +48,15 @@
   background-color: white;
 }
 
-ol {
-  margin-top: 30px;
-  list-style: none;
+#Keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-ol > li {
-  line-height: 32px;
-  margin-bottom: 16px;
+#Keyboard .row {
+  display: flex;
+  gap: 2px;
 }
 
 #Keyboard .row:nth-child(2) {
@@ -47,4 +70,13 @@ ol > li {
 #Keyboard button {
   width: 30px;
   height: 30px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
 }

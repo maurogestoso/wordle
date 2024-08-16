@@ -9,7 +9,8 @@ export default function useKeyEventListener({
     const listener = (event) => {
       if (event.key === "Backspace") return onBackspaceKeypress();
       if (event.key === "Enter") return onEnterKeypress();
-      if (/^[a-zA-Z]$/.test(event.key)) return onLetterKeypress(event.key);
+      if (/^[a-zA-Z]$/.test(event.key))
+        return onLetterKeypress(event.key.toLowerCase());
     };
     document.addEventListener("keyup", listener);
 
