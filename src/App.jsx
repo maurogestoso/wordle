@@ -1,18 +1,23 @@
 import React from "react";
+import useGuessesReducer from "./hooks/useGuessesReducer";
+import useKeyEventListener from "./hooks/useKeyEventListener";
 import "./App.css";
 
 function App({ targetWord }) {
-  const [{ guesses, currentGuessIndex, guessedLettersStatus }, dispatch] =
-    React.useReducer(guessesReducer, {
-      currentGuessIndex: 0,
-      guesses: ["", "", "", "", "", ""],
-      guessedLettersStatus: {},
-      targetWord,
-    });
-  useKeyEventListener(dispatch);
+  const {
+    state: { guesses, currentGuessIndex, guessedLettersStatus },
+    actions,
+  } = useGuessesReducer({ targetWord });
+
+  useKeyEventListener({
+    onBackspaceKeypress: actions.backspaceKeypress,
+    onEnterKeypress: actions.enterKeypress,
+    onLetterKeypress: actions.typeLetter,
+  });
 
   handleWin(targetWord, guesses, currentGuessIndex);
   handleLose(targetWord, guesses, currentGuessIndex);
+
   return (
     <main>
       <h1>Wordle</h1>
@@ -31,9 +36,7 @@ function App({ targetWord }) {
       </ol>
       <Keyboard
         guessedLettersStatus={guessedLettersStatus}
-        typeLetter={(letter) =>
-          dispatch({ type: "TYPE_LETTER", payload: letter })
-        }
+        typeLetter={actions.typeLetter}
       />
     </main>
   );
@@ -91,56 +94,6 @@ function Keyboard({ guessedLettersStatus, typeLetter }) {
       ))}
     </div>
   );
-}
-
-function guessesReducer(state, action) {
-  let newGuesses;
-  let newGuessedLettersStatus;
-  const currentGuess = state.guesses[state.currentGuessIndex];
-  switch (action.type) {
-    case "TYPE_LETTER":
-      if (currentGuess.length === 5) return state;
-      newGuesses = state.guesses.slice();
-      newGuesses[state.currentGuessIndex] += action.payload;
-      return { ...state, guesses: newGuesses };
-    case "BACKSPACE":
-      if (currentGuess.length === 0) return state;
-      newGuesses = state.guesses.slice();
-      newGuesses[state.currentGuessIndex] = currentGuess.slice(0, -1);
-      return { ...state, guesses: newGuesses };
-    case "GUESS_WORD":
-      if (currentGuess.length !== 5) return state;
-      const { targetWord } = state;
-      newGuessedLettersStatus = { ...state.guessedLettersStatus };
-      currentGuess.split("").forEach((letter, i) => {
-        if (targetWord[i] === letter) newGuessedLettersStatus[letter] = "green";
-        else if (targetWord.includes(letter))
-          newGuessedLettersStatus[letter] = "yellow";
-        else newGuessedLettersStatus[letter] = "gray";
-      });
-      return {
-        ...state,
-        currentGuessIndex: state.currentGuessIndex + 1,
-        guessedLettersStatus: newGuessedLettersStatus,
-      };
-  }
-  return state;
-}
-
-function useKeyEventListener(dispatch) {
-  React.useEffect(() => {
-    const listener = (event) => {
-      if (event.key === "Backspace") return dispatch({ type: "BACKSPACE" });
-      if (event.key === "Enter") return dispatch({ type: "GUESS_WORD" });
-      if (/^[a-zA-Z]$/.test(event.key))
-        return dispatch({ type: "TYPE_LETTER", payload: event.key });
-    };
-    document.addEventListener("keyup", listener);
-
-    return () => {
-      document.removeEventListener("keyup", listener);
-    };
-  }, []);
 }
 
 function handleWin(targetWord, guesses, currentGuessIndex) {
