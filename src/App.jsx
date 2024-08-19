@@ -57,6 +57,6 @@ function handleLose(targetWord, guesses, currentGuessIndex) {
     setTimeout(() => {
       alert("You've lost!");
       location.reload();
-    }, 500);
+    }, 1500);
   }
 }
