@@ -29,3 +29,17 @@
   font-size: 0.8em;
   background-color: var(--bg-color-key);
 }
+
+#Keyboard button.letter-key.bg-present {
+  background-color: var(--color-present);
+  color: white;
+}
+#Keyboard button.letter-key.bg-correct {
+  background-color: var(--color-correct);
+  color: white;
+}
+
+#Keyboard button.letter-key.bg-absent {
+  background-color: var(--color-absent);
+  color: white;
+}

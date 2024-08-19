@@ -1,31 +1,28 @@
 import React, { useRef } from "react";
 import Keyboard from "./Keyboard";
 import GuessTiles from "./GuessTiles";
-import useGuessesReducer from "./hooks/useGuessesReducer";
+import useGuessesReducer, { selectors } from "./hooks/useGuessesReducer";
 import useKeyEventListener from "./hooks/useKeyEventListener";
 import "./App.css";
 
 export default function App({ targetWord }) {
   const winDialogRef = useRef();
   const loseDialogRef = useRef();
-  const {
-    state: { guesses, currentGuessIndex, guessedLettersStatus },
-    actions,
-  } = useGuessesReducer({ targetWord });
+  const { state, actions } = useGuessesReducer();
 
   useKeyEventListener({
-    onBackspaceKeypress: actions.backspaceKeypress,
-    onEnterKeypress: actions.enterKeypress,
+    onBackspaceKeypress: actions.pressBackspace,
+    onEnterKeypress: actions.enterGuess,
     onLetterKeypress: actions.typeLetter,
   });
 
-  onWin({ targetWord, guesses, currentGuessIndex }, () => {
+  onWin({ targetWord, guesses: state.guesses }, () => {
     setTimeout(() => {
       winDialogRef.current.show();
     }, 1200);
   });
 
-  onLose({ targetWord, guesses, currentGuessIndex }, () => {
+  onLose({ targetWord, guesses: state.guesses }, () => {
     setTimeout(() => {
       loseDialogRef.current.show();
     }, 1200);
@@ -37,16 +34,22 @@ export default function App({ targetWord }) {
         <h1>Wordle</h1>
       </header>
       <div id="guesses">
-        {guesses.map((guess, i) => (
-          <GuessTiles
-            key={i}
-            word={guess}
-            targetWord={targetWord}
-            isGuessed={i < currentGuessIndex}
-          />
+        {state.guesses.map((guess, i) => (
+          <GuessTiles key={i} word={guess} targetWord={targetWord} isGuessed />
         ))}
+        {state.guesses.length < 6 && (
+          <GuessTiles
+            key={"current-guess"}
+            word={state.currentGuess}
+            targetWord={targetWord}
+          />
+        )}
+        {state.guesses.length < 5 &&
+          Array(5 - state.guesses.length)
+            .fill("")
+            .map((_, i) => <GuessTiles key={`empty-${i}`} />)}
       </div>
-      <Keyboard guessedLettersStatus={guessedLettersStatus} {...actions} />
+      <Keyboard guesses={state.guesses} targetWord={targetWord} {...actions} />
 
       <dialog ref={winDialogRef}>
         You've won!
@@ -75,17 +78,16 @@ export default function App({ targetWord }) {
   );
 }
 
-function onWin({ targetWord, guesses, currentGuessIndex }, cb) {
-  const lastGuess = guesses[currentGuessIndex - 1];
+function onWin({ targetWord, guesses }, cb) {
+  const lastGuess = guesses.at(-1);
   if (targetWord === lastGuess) {
     cb();
   }
 }
 
-function onLose({ targetWord, guesses, currentGuessIndex }, cb) {
-  console.log({ targetWord, guesses, currentGuessIndex });
-  if (currentGuessIndex < 6) return;
-  const lastGuess = guesses[currentGuessIndex - 1];
+function onLose({ targetWord, guesses }, cb) {
+  if (guesses.length < 6) return;
+  const lastGuess = guesses.at(-1);
   if (targetWord !== lastGuess) {
     cb();
   }

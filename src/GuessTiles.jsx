@@ -1,6 +1,6 @@
 import "./GuessTiles.css";
 
-export default function GuessTiles({ word, targetWord, isGuessed }) {
+export default function GuessTiles({ word = "", targetWord, isGuessed }) {
   const tiles = Array(5)
     .fill("")
     .map((_, i) => (

@@ -1,12 +1,18 @@
+import { selectors } from "./hooks/useGuessesReducer";
 import "./Keyboard.css";
 
 export default function Keyboard({
-  guessedLettersStatus,
+  guesses,
+  targetWord,
   enterKeypress,
   typeLetter,
   backspaceKeypress,
 }) {
   const keyRows = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
+  const guessedLettersStatus = selectors.getLetterKeysStatus(
+    guesses,
+    targetWord
+  );
   return (
     <div id="Keyboard">
       {keyRows.map((row, rowIdx) => (

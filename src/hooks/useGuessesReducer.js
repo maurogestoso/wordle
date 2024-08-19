@@ -1,11 +1,9 @@
-import React from "react";
+import React, { useReducer } from "react";
 
-export default function useGuessesReducer({ targetWord }) {
-  const [state, dispatch] = React.useReducer(reducer, {
-    currentGuessIndex: 0,
-    guesses: ["", "", "", "", "", ""],
-    guessedLettersStatus: {},
-    targetWord,
+export default function useGuessesReducer() {
+  const [state, dispatch] = useReducer(guessesReducer, {
+    currentGuess: "",
+    guesses: [],
   });
 
   return {
@@ -13,44 +11,43 @@ export default function useGuessesReducer({ targetWord }) {
     actions: {
       typeLetter: (letter) =>
         dispatch({ type: "TYPE_LETTER", payload: letter }),
-      enterKeypress: () => dispatch({ type: "GUESS_WORD" }),
-      backspaceKeypress: () => dispatch({ type: "BACKSPACE" }),
+      enterGuess: () => dispatch({ type: "ENTER_GUESS" }),
+      pressBackspace: () => dispatch({ type: "BACKSPACE" }),
     },
-    dispatch,
   };
 }
 
-export function reducer(state, action) {
-  let newGuesses;
-  let newGuessedLettersStatus;
-  const currentGuess = state.guesses[state.currentGuessIndex];
+export function guessesReducer(state, action = { type: "UNKNOWN" }) {
   switch (action.type) {
     case "TYPE_LETTER":
-      if (currentGuess.length === 5) return state;
-      newGuesses = state.guesses.slice();
-      newGuesses[state.currentGuessIndex] += action.payload;
-      return { ...state, guesses: newGuesses };
+      if (state.currentGuess.length === 5) return state;
+      return { ...state, currentGuess: state.currentGuess + action.payload };
     case "BACKSPACE":
-      if (currentGuess.length === 0) return state;
-      newGuesses = state.guesses.slice();
-      newGuesses[state.currentGuessIndex] = currentGuess.slice(0, -1);
-      return { ...state, guesses: newGuesses };
-    case "GUESS_WORD":
-      if (currentGuess.length !== 5) return state;
-      const { targetWord } = state;
-      newGuessedLettersStatus = { ...state.guessedLettersStatus };
-      currentGuess.split("").forEach((letter, i) => {
-        if (targetWord[i] === letter)
-          newGuessedLettersStatus[letter] = "correct";
-        else if (targetWord.includes(letter))
-          newGuessedLettersStatus[letter] = "present";
-        else newGuessedLettersStatus[letter] = "absent";
-      });
+      return { ...state, currentGuess: state.currentGuess.slice(0, -1) };
+    case "ENTER_GUESS":
+      if (state.currentGuess.length < 5) return state;
       return {
         ...state,
-        currentGuessIndex: state.currentGuessIndex + 1,
-        guessedLettersStatus: newGuessedLettersStatus,
+        guesses: [...state.guesses, state.currentGuess],
+        currentGuess: "",
       };
+    default:
+      return state;
   }
   return state;
+}
+
+export const selectors = {
+  getLetterKeysStatus,
+};
+
+function getLetterKeysStatus(guesses, targetWord) {
+  return guesses.reduce((acc, guess) => {
+    guess.split("").forEach((letter, i) => {
+      if (!targetWord.includes(letter)) acc[letter] = "absent";
+      else if (targetWord[i] === letter) acc[letter] = "correct";
+      else acc[letter] = "present";
+    });
+    return acc;
+  }, {});
 }
