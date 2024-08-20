@@ -1,32 +1,28 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Keyboard from "./Keyboard";
 import GuessTiles from "./GuessTiles";
-import useGuessesReducer, { selectors } from "./hooks/useGuessesReducer";
-import useKeyEventListener from "./hooks/useKeyEventListener";
 import "./App.css";
+import CurrentGuess from "./CurrentGuess";
 
 export default function App({ targetWord }) {
   const winDialogRef = useRef();
   const loseDialogRef = useRef();
-  const { state, actions } = useGuessesReducer();
+  const [guesses, setGuesses] = useState([]);
 
-  useKeyEventListener({
-    onBackspaceKeypress: actions.pressBackspace,
-    onEnterKeypress: actions.enterGuess,
-    onLetterKeypress: actions.typeLetter,
-  });
+  const hasWon = guesses.at(-1) === targetWord;
+  const hasLost = guesses.length === 6 && guesses.at(-1) !== targetWord;
 
-  onWin({ targetWord, guesses: state.guesses }, () => {
+  if (hasWon) {
     setTimeout(() => {
       winDialogRef.current.show();
     }, 1200);
-  });
+  }
 
-  onLose({ targetWord, guesses: state.guesses }, () => {
+  if (hasLost) {
     setTimeout(() => {
       loseDialogRef.current.show();
     }, 1200);
-  });
+  }
 
   return (
     <main id="board">
@@ -34,22 +30,23 @@ export default function App({ targetWord }) {
         <h1>Wordle</h1>
       </header>
       <div id="guesses">
-        {state.guesses.map((guess, i) => (
+        {guesses.map((guess, i) => (
           <GuessTiles key={i} word={guess} targetWord={targetWord} isGuessed />
         ))}
-        {state.guesses.length < 6 && (
-          <GuessTiles
-            key={"current-guess"}
-            word={state.currentGuess}
-            targetWord={targetWord}
+        {guesses.length < 6 && (
+          <CurrentGuess
+            onEnterKeypress={(guess) => {
+              setGuesses(guesses.concat(guess));
+            }}
           />
         )}
-        {state.guesses.length < 5 &&
-          Array(5 - state.guesses.length)
+        {guesses.length < 5 &&
+          Array(5 - guesses.length)
             .fill("")
             .map((_, i) => <GuessTiles key={`empty-${i}`} />)}
       </div>
-      <Keyboard guesses={state.guesses} targetWord={targetWord} {...actions} />
+
+      <Keyboard guesses={guesses} targetWord={targetWord} />
 
       <dialog ref={winDialogRef}>
         You've won!
